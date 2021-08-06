@@ -1,6 +1,6 @@
-import { rootHistory } from './../../rootHistory';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { call, delay, fork, put, take } from 'redux-saga/effects';
+import { rootHistory } from 'utils';
 import { LoginPayload, authAction } from './authSlice';
 
 function* handleLogin(payload: LoginPayload) {

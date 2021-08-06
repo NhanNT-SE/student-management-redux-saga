@@ -1,3 +1,4 @@
+import { studentReducer } from './../features/student/studentSlice';
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import rootSaga from 'app/rootSaga';
 import authReducer from 'features/auth/authSlice';
@@ -8,6 +9,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     dashboard: dashboardReducer,
+    student: studentReducer,
   },
 
   middleware: (getDefaultMiddleware) =>

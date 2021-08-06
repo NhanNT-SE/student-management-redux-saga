@@ -1,9 +1,11 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import React, { useEffect } from 'react';
 import { dashboardActions, dashboardSelectors } from './dashboardSlice';
-import { Box, Grid, LinearProgress, makeStyles } from '@material-ui/core';
+import { Box, Grid, LinearProgress, makeStyles, Typography } from '@material-ui/core';
 import StatisticsItem from './components/StatisticsItem';
 import { PeopleAlt } from '@material-ui/icons';
+import Widget from './components/Widget';
+import StudentRankingList from './components/StudentRankingList';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
@@ -35,8 +37,11 @@ export default function Dashboard() {
   }, [dispatch]);
   return (
     <Box className={classes.root}>
-      {/* Statistics section */}
+      {/* Loading */}
+
       {loading && <LinearProgress className={classes.loading} />}
+      {/* Statistics section */}
+
       <Grid container spacing={3}>
         <Grid item xs={12} md={6} lg={3}>
           <StatisticsItem
@@ -67,6 +72,41 @@ export default function Dashboard() {
           />
         </Grid>
       </Grid>
+
+      {/* All student ranking */}
+
+      <Box mt={5}>
+        <Typography variant="h4">All Students</Typography>
+        <Box mt={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={3}>
+              <Widget title="Student with hightest mark">
+                <StudentRankingList studentList={highestStudentList} />
+              </Widget>
+            </Grid>
+            <Grid item xs={12} md={6} lg={3}>
+              <Widget title="Student with lowest mark">
+                <StudentRankingList studentList={lowestStudentList} />
+              </Widget>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+      {/* Ranking by city */}
+      <Box mt={5}>
+        <Typography variant="h4">Ranking Students</Typography>
+        <Box mt={2}>
+          <Grid container spacing={3}>
+            {rankingByCities.map((ranking) => (
+              <Grid item xs={12} md={6} lg={3} key={ranking.cityId}>
+                <Widget title={ranking.cityName}>
+                  <StudentRankingList studentList={ranking.rankingList} />
+                </Widget>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 }
