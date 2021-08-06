@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { Student } from 'models';
+import { City, Student } from 'models';
 import React from 'react';
 import { capitalizeString, getMarkColor } from 'utils';
 
@@ -19,11 +19,17 @@ const useStyles = makeStyles((theme) => ({
 
 export interface StudentTableProps {
   studentList: Student[];
+  cityMap: { [key: string]: City };
   onEdit?: (student: Student) => void;
   onRemove?: (student: Student) => void;
 }
 
-export default function StudentTable({ studentList, onEdit, onRemove }: StudentTableProps) {
+export default function StudentTable({
+  studentList,
+  cityMap,
+  onEdit,
+  onRemove,
+}: StudentTableProps) {
   const classes = useStyles();
 
   return (
@@ -42,13 +48,13 @@ export default function StudentTable({ studentList, onEdit, onRemove }: StudentT
         <TableBody>
           {studentList.map((student, index) => (
             <TableRow key={student.id}>
-              <TableCell width={310} >{student.id}</TableCell>
+              <TableCell width={310}>{student.id}</TableCell>
               <TableCell>{student.name}</TableCell>
               <TableCell>{capitalizeString(student.gender)}</TableCell>
               <TableCell color={getMarkColor(student.mark)}>
                 <Box color={getMarkColor(student.mark)}>{student.mark}</Box>
               </TableCell>
-              <TableCell>{student.city}</TableCell>
+              <TableCell>{cityMap[student.city]?.name}</TableCell>
               <TableCell align="right">
                 <Button
                   size="small"

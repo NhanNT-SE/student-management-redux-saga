@@ -4,6 +4,9 @@ import { studentActions, studentSelectors } from '../studentSlice';
 import { Box, Button, LinearProgress, makeStyles, Typography } from '@material-ui/core';
 import StudentTable from '../components/StudentTable';
 import Pagination from '@material-ui/lab/Pagination';
+import { citySelectors } from 'features/city/citySlice';
+import StudentFilters from '../components/StudentFilters';
+import { ListParams } from 'models';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,10 +33,16 @@ export default function ListPage() {
   const pagination = useAppSelector(studentSelectors.selectPagination);
   const filter = useAppSelector(studentSelectors.selectFilter);
   const loading = useAppSelector(studentSelectors.selectLoading);
+  const cityMap = useAppSelector(citySelectors.selectCityMap);
+  const cityList = useAppSelector(citySelectors.selectCityList);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(studentActions.fetchStudentList(filter));
-  }, [dispatch, filter]);
+  const handleSearchChange = (newFilter: ListParams) => {
+    dispatch(studentActions.setFilterWithDebounce(newFilter));
+  };
+  const handleFilterChange = (newFilter: ListParams) => {
+    dispatch(studentActions.setFilter(newFilter));
+  };
+
   const handlePageChange = (e: any, page: number) => {
     dispatch(
       studentActions.setFilter({
@@ -42,6 +51,9 @@ export default function ListPage() {
       })
     );
   };
+  useEffect(() => {
+    dispatch(studentActions.fetchStudentList(filter));
+  }, [dispatch, filter]);
   return (
     <Box className={classes.root}>
       {loading && <LinearProgress className={classes.loading} />}
@@ -51,8 +63,17 @@ export default function ListPage() {
           Add new student
         </Button>
       </Box>
+      {/* Student filters */}
+      <Box mb={3}>
+        <StudentFilters
+          filter={filter}
+          cityList={cityList}
+          onChange={handleFilterChange}
+          onSearchChange={handleSearchChange}
+        />
+      </Box>
       {/* Student table */}
-      <StudentTable studentList={studentList} />
+      <StudentTable studentList={studentList} cityMap={cityMap} />
       {/* Pagination */}
       <Box mt={2} display="flex" justifyContent="center">
         <Pagination
