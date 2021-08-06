@@ -3,13 +3,14 @@ import { ChevronLeft } from '@material-ui/icons';
 import { studentApi } from 'api/studentApi';
 import { Student } from 'models';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import StudentForm from '../components/StudentForm';
 
 export default function AddEditPage() {
   const { studentId } = useParams<{ studentId: string }>();
   const [student, setStudent] = useState<Student>();
-
+  const history = useHistory();
   useEffect(() => {
     if (!studentId) return;
     (async () => {
@@ -21,7 +22,16 @@ export default function AddEditPage() {
       }
     })();
   }, [studentId]);
-  const handleStudentFormSubmit = (formValue: Student) => {};
+  const handleStudentFormSubmit = async (formValue: Student) => {
+    console.log('Submit', formValue);
+    if (isEdit) {
+      await studentApi.update(formValue);
+    } else {
+      await studentApi.add(formValue);
+    }
+    toast.success('Save student successfully!');
+    history.push('/admin/student');
+  };
   const isEdit = Boolean(studentId);
   const initialValue: Student = {
     name: '',
@@ -39,12 +49,11 @@ export default function AddEditPage() {
         </Typography>
       </Link>
       <Typography variant="h4"> {isEdit ? 'Update student' : 'Add new student'} </Typography>
-      {!isEdit ||
-        (Boolean(student) && (
-          <Box mt={3}>
-            <StudentForm initialValue={initialValue} onSubmit={handleStudentFormSubmit} />
-          </Box>
-        ))}
+      {(!isEdit || Boolean(student)) && (
+        <Box mt={3}>
+          <StudentForm initialValue={initialValue} onSubmit={handleStudentFormSubmit} />
+        </Box>
+      )}
     </Box>
   );
 }

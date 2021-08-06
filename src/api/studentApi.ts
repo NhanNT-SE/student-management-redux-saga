@@ -1,8 +1,8 @@
-import { City, ListParams, ListResponse, Student } from 'models';
+import { ListParams, ListResponse, Student } from 'models';
 import { axiosClient } from './axiosClient';
 
 const studentApi = {
-  getAll(params: ListParams): Promise<ListResponse<City>> {
+  getAll(params: ListParams): Promise<ListResponse<Student>> {
     const url = '/students';
     return axiosClient.get(url, { params });
   },
@@ -11,14 +11,14 @@ const studentApi = {
     const url = `/students/${id}`;
     return axiosClient.get(url);
   },
-  
-  add(params: ListParams): Promise<ListResponse<City>> {
+
+  add(data: Partial<Student>): Promise<Student> {
     const url = '/students';
-    return axiosClient.get(url, { params });
+    return axiosClient.post(url, data);
   },
 
-  update(id: string, data: Student): Promise<Student> {
-    const url = `/students/${id}`;
+  update(data: Partial<Student>): Promise<Student> {
+    const url = `/students/${data.id}`;
     return axiosClient.patch(url, data);
   },
 

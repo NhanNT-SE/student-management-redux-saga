@@ -7,7 +7,7 @@ export interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-export default function InputField({ name, control, label, ...inputProps }: InputFieldProps) {
+export function InputField({ name, control, label, ...inputProps }: InputFieldProps) {
   const {
     field: { value, onChange, onBlur, ref },
     fieldState: { invalid, error },

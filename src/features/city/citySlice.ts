@@ -39,6 +39,10 @@ export const citySelectors = {
       }, {});
     }
   ),
+  selectCityOptions: createSelector(
+    (state: RootState) => state.city.list,
+    (cityList) => cityList.map((city) => ({ label: city.name, value: city.code }))
+  ),
 };
 const cityReducer = citySlice.reducer;
 

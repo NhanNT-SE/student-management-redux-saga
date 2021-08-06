@@ -9,6 +9,7 @@ import StudentFilters from '../components/StudentFilters';
 import { ListParams, Student } from 'models';
 import { studentApi } from 'api/studentApi';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +60,7 @@ export default function ListPage() {
   const handleRemoveStudent = async (student: Student) => {
     try {
       await studentApi.remove(student.id!);
+      toast.success('Remove student successfully');
       const newFilter = { ...filter };
       dispatch(studentActions.setFilter(newFilter));
     } catch (error) {
