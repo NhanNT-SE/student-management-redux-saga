@@ -25,13 +25,6 @@ export default function Dashboard() {
   const highestStudentList = useAppSelector(dashboardSelectors.highestStudentList);
   const lowestStudentList = useAppSelector(dashboardSelectors.lowestStudentList);
   const rankingByCities = useAppSelector(dashboardSelectors.rankingByCities);
-  console.log({
-    loading,
-    statistics,
-    highestStudentList,
-    lowestStudentList,
-    rankingByCities,
-  });
   useEffect(() => {
     dispatch(dashboardActions.fetchData());
   }, [dispatch]);

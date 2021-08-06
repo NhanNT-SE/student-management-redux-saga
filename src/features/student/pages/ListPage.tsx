@@ -6,7 +6,9 @@ import StudentTable from '../components/StudentTable';
 import Pagination from '@material-ui/lab/Pagination';
 import { citySelectors } from 'features/city/citySlice';
 import StudentFilters from '../components/StudentFilters';
-import { ListParams } from 'models';
+import { ListParams, Student } from 'models';
+import { studentApi } from 'api/studentApi';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ListPage() {
   const classes = useStyles();
+  const match = useRouteMatch();
+  const history = useHistory();
   const studentList = useAppSelector(studentSelectors.selectStudentList);
   const pagination = useAppSelector(studentSelectors.selectPagination);
   const filter = useAppSelector(studentSelectors.selectFilter);
@@ -51,6 +55,19 @@ export default function ListPage() {
       })
     );
   };
+
+  const handleRemoveStudent = async (student: Student) => {
+    try {
+      await studentApi.remove(student.id!);
+      const newFilter = { ...filter };
+      dispatch(studentActions.setFilter(newFilter));
+    } catch (error) {
+      console.log('Failed to remove student', error);
+    }
+  };
+  const handleEditStudent = async (student: Student) => {
+    history.push(`${match.url}/${student.id}`);
+  };
   useEffect(() => {
     dispatch(studentActions.fetchStudentList(filter));
   }, [dispatch, filter]);
@@ -59,9 +76,11 @@ export default function ListPage() {
       {loading && <LinearProgress className={classes.loading} />}
       <Box className={classes.titleContainer}>
         <Typography variant="h4">Students</Typography>
-        <Button variant="contained" color="primary">
-          Add new student
-        </Button>
+        <Link to={`${match.url}/add`} style={{ textDecoration: 'none' }}>
+          <Button variant="contained" color="primary">
+            Add new student
+          </Button>
+        </Link>
       </Box>
       {/* Student filters */}
       <Box mb={3}>
@@ -73,7 +92,12 @@ export default function ListPage() {
         />
       </Box>
       {/* Student table */}
-      <StudentTable studentList={studentList} cityMap={cityMap} />
+      <StudentTable
+        studentList={studentList}
+        cityMap={cityMap}
+        onEdit={handleEditStudent}
+        onRemove={handleRemoveStudent}
+      />
       {/* Pagination */}
       <Box mt={2} display="flex" justifyContent="center">
         <Pagination
